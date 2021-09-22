@@ -3,10 +3,7 @@ const User = require("../models/user");
 const auth = require("../middleware/auth");
 const multer = require("multer");
 const sharp = require("sharp");
-const {
-    sendWelcomeEmail,
-    sendCancellationEmail,
-} = require("../emails/account");
+const { sendWelcomeEmail, sendCancellationEmail } = require("../emails/account");
 const router = new express.Router();
 
 router.post("/users", async (req, res) => {
@@ -23,10 +20,7 @@ router.post("/users", async (req, res) => {
 
 router.post("/users/login", async (req, res) => {
     try {
-        const user = await User.findByCredentials(
-            req.body.email,
-            req.body.password
-        );
+        const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
         res.send({ user, token });
     } catch (error) {
@@ -82,12 +76,10 @@ router.get("/users/:id", async (req, res) => {
 router.patch("/users/me", auth, async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdate = ["name", "email", "password", "age"];
-    const isValidOperation = updates.every((update) =>
-        allowedUpdate.includes(update)
-    );
+    const isValidOperation = updates.every((update) => allowedUpdate.includes(update));
 
     if (!isValidOperation) {
-        return res.status(404).send({ error: "Invalid updates!" });
+        return res.status(400).send({ error: "Invalid updates!" });
     }
     try {
         updates.forEach((update) => {
@@ -106,7 +98,7 @@ router.delete("/users/me", auth, async (req, res) => {
         sendCancellationEmail(req.user.email, req.user.name);
         res.send(req.user);
     } catch (error) {
-        res.status(500).send();
+        res.status(400).send(errwor);
     }
 });
 

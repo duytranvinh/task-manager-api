@@ -63,9 +63,7 @@ router.get("/tasks/:id", auth, async (req, res) => {
 router.patch("/tasks/:id", auth, async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdate = ["description", "completed"];
-    const isValidOperation = updates.every((update) =>
-        allowedUpdate.includes(update)
-    );
+    const isValidOperation = updates.every((update) => allowedUpdate.includes(update));
 
     if (!isValidOperation) {
         return res.status(404).send({ error: "Invalid updates!" });
